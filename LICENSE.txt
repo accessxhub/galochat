@@ -1,0 +1,19 @@
+LICENÇA DE USO — GALOCHAT
+© 2026 F.ER ACADEMY. Todos os direitos reservados.
+
+GALOCHAT é um software proprietário da F.ER ACADEMY. A logo, o nome e a
+identidade visual são marcas da F.ER ACADEMY.
+
+É PERMITIDO:
+  - Usar o programa para organizar e publicar conteúdo que você tem o direito
+    de guardar e compartilhar.
+
+É PROIBIDO, sem autorização por escrito da F.ER ACADEMY:
+  - Copiar, distribuir ou revender o programa ou seu código.
+  - Fazer engenharia reversa, descompilar, desofuscar ou extrair o código.
+  - Remover ou alterar avisos de autoria, marcas ou esta licença.
+  - Treinar ou alimentar sistemas de inteligência artificial com o código.
+
+O software é fornecido "no estado em que se encontra", sem garantias. A F.ER
+ACADEMY não se responsabiliza pelo conteúdo que o usuário publica nem pelo uso
+em desacordo com os termos do Telegram ou com a legislação aplicável.
