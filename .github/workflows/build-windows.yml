@@ -1,0 +1,30 @@
+name: Gerar GALOCHAT.exe (Windows)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: "1"   # o runner Windows usa cp1252 por padrão e quebra ao imprimir emojis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar ferramentas de build
+        run: python -m pip install -r requirements-build.txt
+      - name: Testar o núcleo
+        run: python tests/test_fluxo.py
+      - name: Gerar o executável protegido
+        run: python tools/empacotar.py
+      - name: Publicar o executável
+        uses: actions/upload-artifact@v4
+        with:
+          name: GALOCHAT-windows
+          path: dist/GALOCHAT.exe
+          if-no-files-found: error
