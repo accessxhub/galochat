@@ -21,12 +21,12 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 MODULOS = ["galochat_core.py", "galochat_app.py", "galochat_brand.py"]
 ENTRADA = "galochat_app.py"
-VERSAO = "1.0.0"
+VERSAO = "1.0.1"
 
 VERSION_INFO = f"""# gerado automaticamente — metadados do executável
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1,0,0,0), prodvers=(1,0,0,0),
+    filevers=(1,0,1,0), prodvers=(1,0,1,0),
     mask=0x3f, flags=0x0, OS=0x40004, fileType=0x1, subtype=0x0, date=(0,0)),
   kids=[
     StringFileInfo([StringTable('040904B0', [
@@ -79,13 +79,22 @@ def main():
 
     exe = saida / ("GALOCHAT.exe" if sys.platform == "win32" else "GALOCHAT")
     print("  testando o executável gerado…")
-    try:
-        res = subprocess.run([str(exe), "--selftest"], capture_output=True, text=True)
-        print(res.stdout[-400:])
-        if res.returncode != 0:
-            sys.exit("O autoteste do executável falhou.")
-    except PermissionError:
-        print("  (não foi possível executar o teste nesta pasta; rode o .exe à mão para conferir)")
+    with tempfile.TemporaryDirectory() as pasta_teste:
+        try:
+            # Um .exe "--windowed" no Windows não tem console: a saída pode vir vazia ou ilegível.
+            # Por isso o resultado é lido do selftest.txt que o próprio programa grava.
+            res = subprocess.run([str(exe), "--selftest"], capture_output=True, cwd=pasta_teste,
+                                 text=True, encoding="utf-8", errors="replace", timeout=300)
+            relatorio = Path(pasta_teste) / "selftest.txt"
+            texto = relatorio.read_text(encoding="utf-8", errors="replace") if relatorio.exists() \
+                else (res.stdout or "") + (res.stderr or "")
+            print(texto[-600:] or "  (o executável não gerou relatório)")
+            if res.returncode != 0:
+                sys.exit("O autoteste do executável falhou.")
+        except PermissionError:
+            print("  (não foi possível executar o teste nesta pasta; rode o .exe à mão para conferir)")
+        except subprocess.TimeoutExpired:
+            sys.exit("O autoteste do executável não respondeu em 5 minutos.")
     print(f"\nPronto: {exe}")
     print("Distribua apenas este arquivo. O código-fonte não vai dentro de forma legível.")
 
